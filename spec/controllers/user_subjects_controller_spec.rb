@@ -1,18 +1,34 @@
 require "rails_helper"
 
-RSpec.describe UserSubjectsController, type: :controller do
+describe UserSubjectsController, type: :controller do
+  let(:user) {FactoryGirl.create :user, :trainee}
+  let(:course) {FactoryGirl.create :course}
+  let(:subject) {FactoryGirl.create :subject}
+  let(:course_subject) {FactoryGirl.create :course_subject,
+    course_id: course.id, subject_id: subject.id}
+  let(:user_subject) {FactoryGirl.create :user_subject,
+    user_id: user.id, course_subject_id: course_subject.id}
 
-  before do
-    @user = FactoryGirl.create :admin
-    @subject = FactoryGirl.create :subject
-    @course_subject = FactoryGirl.create :course_subject
-    @user_subject = FactoryGirl.create :user_subject
-    @user_subject_params = ActionController::Parameters.
-      new(user_subject: {status: :finished})
+  before(:each) do
+    sign_in user
+    allow(UserSubject).to receive(:find).and_return user_subject
   end
 
-  it "update user subject test" do
-    sign_in @user
-    patch :update, id: @user_subject, user_subject: @user_subject_params
+  context "update user subjects success" do
+    before do
+      allow(user_subject).to receive(:update_attributes).and_return true
+      put :update, id: user_subject.id, user_subject:
+        {user_id: user_subject.id, course_subject_id: user_subject.id}
+    end
+    it {expect(response).to redirect_to [user_subject.course_subject.course]}
+  end
+
+  context "update user subjects fail" do
+    before do
+      allow(user_subject).to receive(:update_attributes).and_return false
+      put :update, id: user_subject.id, user_subject:
+        {user_id: user_subject.id, course_subject_id: user_subject.id}
+    end
+    it {expect(response).to redirect_to [user_subject.course_subject.course]}
   end
 end

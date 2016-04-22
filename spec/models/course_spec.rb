@@ -1,9 +1,10 @@
 require "rails_helper"
+require "rspec/mocks"
 
 describe Course, type: :model do
   let(:user) {FactoryGirl.create :user, :trainee}
-  let(:course) {FactoryGirl.create :course, user_id: user.id}
-  subject {course}
+  let(:course) {FactoryGirl.create :course}
+  subject{course}
 
   describe "validates" do
     context "create is valid" do

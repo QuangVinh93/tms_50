@@ -12,8 +12,8 @@ FactoryGirl.define do
     password_confirmation "foobar"
 
     trait :trainee do
-      name "user#{User.count}"
-      email "user#{User.count}@user.com"
+      name "user#{User.all.count}"
+      email "user#{User.all.count}@user.com"
       role User.roles[:trainee]
     end
 
