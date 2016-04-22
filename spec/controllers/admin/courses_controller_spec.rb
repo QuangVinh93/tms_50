@@ -9,6 +9,7 @@ describe Admin::CoursesController, type: :controller do
   before(:each) do
     sign_in subject[:user]
     request.env["HTTP_REFERER"] = admin_courses_path
+    allow(Course).to receive(:find).and_return course
   end
 
   it "show course test" do
@@ -25,14 +26,36 @@ describe Admin::CoursesController, type: :controller do
     patch :update, id: subject[:course], course: course_params
   end
 
-  it "update courses fail test" do
-    course_params = ActionController::Parameters.
-      new(course: {status: 0})
-    patch :update, id: subject[:course], course: course_params
+  context "update user subjects fail" do
+    before do
+      allow(course).to receive(:update_attributes).and_return false
+      put :update, id: course.id, course:
+        {name: "test"}
+    end
+    it {expect(response).to render_template :index}
+  end
+
+  describe "#create_activity" do
+    context "update user subjects fail" do
+      before do
+        allow(course).to receive(:update_attributes).and_return false
+        put :update, id: course.id, course:
+          {name: "test"}
+      end
+      it {expect(response).to render_template :index}
+    end
   end
 
   it "destroy course success test" do
     delete :destroy, id: subject[:course]
+  end
+
+  context "destroy course fail" do
+    before do
+      allow(course).to receive(:destroy).and_return false
+      delete :destroy, id: course
+    end
+    it {expect(response).to render_template :index}
   end
 
   it "create course fail test" do
