@@ -12,8 +12,8 @@ FactoryGirl.define do
     password_confirmation "foobar"
 
     trait :trainee do
-      name "user#{User.all.count}"
-      email "user#{User.all.count}@user.com"
+      name "User-test"
+      email "User-test@user.com"
       role User.roles[:trainee]
     end
 
@@ -28,9 +28,6 @@ FactoryGirl.define do
       name "admin"
       email "admin@admin.com"
     end
-  end
-
-  factory :guest, class: User do
   end
 
   factory :sign_in_user, class: User do

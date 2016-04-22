@@ -2,20 +2,17 @@ require "rails_helper"
 
 RSpec.describe UsersController, type: :controller do
 
-  let(:user) {User.find_by email: FactoryGirl.attributes_for(:user,
-    :default_trainee)[:email]}
-  subject{user}
+  let(:user) {FactoryGirl.create :admin}
 
-  context "logged in user" do
-    before do
-      sign_in subject
-    end
+  before do
+    sign_in user
+  end
 
-    describe "GET #show" do
-      show_user
+  it "users index test" do
+    get :index
+  end
 
-      it {expect(response).to render_template :show}
-      it {expect(assigns :user).to eq subject}
-    end
+  it "show user test" do
+    get :show, id: user
   end
 end
